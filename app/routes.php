@@ -1,5 +1,8 @@
 <?php
 
+Route::get('/',function(){
+    return Redirect::to('/api/v1/lessons');
+});
 Route::group(['prefix' => 'api/v1'],function()
 {
     Route::get('lessons/{id}/tags','TagsController@index');

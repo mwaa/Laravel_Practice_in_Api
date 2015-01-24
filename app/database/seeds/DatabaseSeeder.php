@@ -23,12 +23,12 @@ class DatabaseSeeder extends Seeder {
 
     private  function cleanDatabase()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        DB::statement('ALTER TABLE lesson_tag DISABLE TRIGGER ALL');
         foreach ($this->tables as $tableName)
         {
             DB::table($tableName)->truncate();
         }
-        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+        DB::statement('ALTER TABLE lesson_tag ENABLE TRIGGER ALL');
 
     }
 }
