@@ -23,11 +23,5 @@ class DatabaseSeeder extends Seeder {
     private  function cleanDatabase()
     {
 
-        foreach ($this->tables as $tableName)
-        {
-            DB::table($tableName)->truncate();
-        }
-
-
     }
 }
