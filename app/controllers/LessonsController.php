@@ -1,7 +1,22 @@
 <?php
 
-class LessonsController extends \BaseController {
+use lip\Transformers\LessonTransformer;
 
+class LessonsController extends ApiController {
+
+    /**
+     * @var lip\Transformers\LessonTransformer
+     */
+    protected $lessonTransformer;
+
+    /**
+     * @param LessonTransformer $lessonTransformer
+     */
+    function __construct(LessonTransformer $lessonTransformer)
+    {
+        $this->lessonTransformer = $lessonTransformer;
+        $this->beforeFilter('auth.basic',['on' => 'post']);
+    }
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -11,8 +26,8 @@ class LessonsController extends \BaseController {
 	{
         $lessons = Lesson::all();
 		return Response::json([
-            'data' => $this->transformCollection($lessons)
-        ],200);
+            'data' => $this->lessonTransformer->transformCollection($lessons->all())
+        ]);
 	}
 
 
@@ -22,17 +37,6 @@ class LessonsController extends \BaseController {
 	 * @return Response
 	 */
 	public function create()
-	{
-		//
-	}
-
-
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
-	public function store()
 	{
 		//
 	}
@@ -51,65 +55,31 @@ class LessonsController extends \BaseController {
 
         if(!$lesson)
         {
-            return Response::json([
-                'error' => [
-                    'message' => 'Lesson does not exist'
-                ]
-            ],404);
+            return $this->respondNotFound('Lesson does not exist.');
+
         }
 
-        return Response::json([
-            'data' => $this->transform($lesson->toArray())
-        ],200);
+        return $this->respond([
+            'data' => $this->lessonTransformer->transform($lesson)
+        ]);
 	}
 
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
-
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-		//
-	}
-
-
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		//
-	}
-
-    private function transformCollection($lessons)
+    /**
+     *
+     */
+    public function store()
     {
-        return array_map([$this,'transform'],$lessons->toArray());
+        if( !Input::get('title') or !Input::get('body'))
+        {
+            return $this->respondFailedValidation('Parameters failed validation for a lesson.');
+        }
+
+        Lesson::create(Input::all());
+
+        return $this->responseCreated('Lesson successfully created.');
     }
 
-    private function transform($lesson)
-    {
-        return [
-                'title' => $lesson['title'],
-                'body' => $lesson['body'],
-                'active' => (boolean)$lesson['some_bool']
-        ];
-    }
+
+
+
 }
