@@ -4,8 +4,7 @@ class DatabaseSeeder extends Seeder {
 
     private $tables =[
         'lessons',
-        'tags',
-        'lesson_tag'
+        'tags'
     ];
 	/**
 	 * Run the database seeds.
@@ -23,12 +22,12 @@ class DatabaseSeeder extends Seeder {
 
     private  function cleanDatabase()
     {
-        DB::statement('ALTER TABLE lesson_tag DISABLE TRIGGER ALL');
+
         foreach ($this->tables as $tableName)
         {
             DB::table($tableName)->truncate();
         }
-        DB::statement('ALTER TABLE lesson_tag ENABLE TRIGGER ALL');
+
 
     }
 }
