@@ -69,4 +69,21 @@ class ApiController extends \BaseController {
         return $this->setStatusCode(422)
             ->respondWithError($message);
     }
+    /**
+     * @param $lessons
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected  function respondWithPagination(Paginator $lessons, $data)
+    {
+        $data = array_merge($data,[
+            'paginator' => [
+                'total_count' => $lessons->getTotal(),
+                'total_page' => $lessons->getTotal() / $lessons->getPerPage(),
+                'current_page' => $lessons->getCurrentPage(),
+                'limit' => $lessons->getPerPage()
+
+            ]
+        ]);
+        return $this->respond($data);
+    }
 }

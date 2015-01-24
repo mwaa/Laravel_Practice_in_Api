@@ -24,11 +24,11 @@ class LessonsController extends ApiController {
 	 */
 	public function index()
 	{
-        $lessons = Lesson::all();
-		return Response::json([
-            'data' => $this->lessonTransformer->transformCollection($lessons->all())
-        ]);
-	}
+        $limit = Input::get('limit') ? : 3;
+        $lessons = Lesson::paginate($limit);
+        $data= $this->lessonTransformer->transformCollection($lessons->all());
+        return $this->respondWithPagination($lessons,$data);
+    }
 
 
 	/**
@@ -78,6 +78,7 @@ class LessonsController extends ApiController {
 
         return $this->responseCreated('Lesson successfully created.');
     }
+
 
 
 
