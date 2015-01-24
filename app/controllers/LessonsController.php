@@ -27,7 +27,7 @@ class LessonsController extends ApiController {
         $limit = Input::get('limit') ? : 3;
         $lessons = Lesson::paginate($limit);
         $data= $this->lessonTransformer->transformCollection($lessons->all());
-        return $this->respondWithPagination($lessons,$data);
+        return $this->respondWithPagination( $lessons ,$data);
     }
 
 
